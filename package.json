@@ -1,0 +1,22 @@
+{
+  "name": "js-study-book",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loktevra/js-study-book.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loktevra/js-study-book/issues"
+  },
+  "homepage": "https://github.com/loktevra/js-study-book#readme",
+  "dependencies": {
+    "sqlite3": "^4.0.3"
+  }
+}
