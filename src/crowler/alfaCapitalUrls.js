@@ -1,9 +1,6 @@
-class AlfaCapitalUrls {
-    constructor(path) {
-        this.path = path;
-    }
-}
-
-AlfaCapitalUrls.getProductsInfo = new AlfaCapitalUrls('https://www.alfacapital.ru/api/products/info.json');
-
-module.exports = AlfaCapitalUrls;
+module.exports = {
+  getProductsInfoUrl: () => 'https://www.alfacapital.ru/api/products/info.json',
+  getGrapDataUrl: ({ pifAlias }) => `https://www.alfacapital.ru/api/pifs/${pifAlias}/graph-data.csv`,
+  getStructureUrl: ({ pifAlias }) => `https://www.alfacapital.ru/api/pifs/${pifAlias}/structure.csv`,
+  getActivesUrl: ({ pifAlias }) => `https://www.alfacapital.ru/api/pifs/${pifAlias}/actives.csv`,
+};
