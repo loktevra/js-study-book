@@ -30,8 +30,9 @@ module.exports = {
   close: () => new Promise(function(resolve, reject) {
     db.close((err) => {
       if (err) {
-        resolve(err);
+        reject(err);
       }
+      resolve();
     });
   }),
 }
