@@ -18,5 +18,8 @@
   "homepage": "https://github.com/loktevra/js-study-book#readme",
   "dependencies": {
     "sqlite3": "^4.0.3"
+  },
+  "devDependencies": {
+    "csv-parse": "^3.1.3"
   }
 }

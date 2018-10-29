@@ -2,6 +2,9 @@
 const dataBase = require('./dataBase');
 const getProductsInfo = require('./getProductsInfo');
 const selectProductsInfo = require('./selectProductsInfo');
+const getPifGraph = require('./getPifGraph');
+
+
 
 async function main() {
   await dataBase.init({ path : `${process.env.HOME}/data/finance.db` });
@@ -23,13 +26,15 @@ async function main() {
       url text
     )`
   });
-  let rows = await selectProductsInfo();
-  if (rows.length === 0) {
+  let products = await selectProductsInfo();
+  if (products.length === 0) {
     console.log('get data')
     await getProductsInfo();
-    rows = await selectProductsInfo();
+    products = await selectProductsInfo();
   }
-  console.log(rows.length)
+  const pifs = products.filter(({ type }) => type === 'pif')
+  const response = await getPifGraph(pifs[0].alias);
+  console.log(response)
   await dataBase.close();
 }
 
