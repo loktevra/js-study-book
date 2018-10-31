@@ -33,8 +33,16 @@ async function main() {
     products = await selectProductsInfo();
   }
   const pifs = products.filter(({ type }) => type === 'pif')
-  const response = await getPifGraph(pifs[0].alias);
-  console.log(response)
+  for (const pif of pifs) {
+    try {
+      const response = await getPifGraph(pif.alias);
+      const lastItem = response[response.length - 1]
+      console.log(`Считан "${pif.title}", последняя дата: ${lastItem.date.toLocaleDateString('ru-RU')}, стоимость пая: ${lastItem.price}, СЧА: ${lastItem.scha}`)
+    } catch(e) {
+      console.log(`Ошибка при чтении "${pif.title}"`)
+    }
+    
+  }
   await dataBase.close();
 }
 
