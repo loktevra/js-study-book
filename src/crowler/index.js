@@ -24,6 +24,15 @@ async function main() {
       url text
     )`
   });
+  await dataBase.run({
+    query: `CREATE TABLE IF NOT EXISTS alfaCapitalPifsGraphs(
+      id integer PRIMARY KEY AUTOINCREMENT,
+      alias text,
+      date text,
+      price integer,
+      scha integer,
+    )`
+  });
   let products = await selectProductsInfo();
   if (products.length === 0) {
     console.log('get data')
