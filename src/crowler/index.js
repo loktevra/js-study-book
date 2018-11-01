@@ -4,8 +4,6 @@ const getProductsInfo = require('./getProductsInfo');
 const selectProductsInfo = require('./selectProductsInfo');
 const getPifGraph = require('./getPifGraph');
 
-
-
 async function main() {
   await dataBase.init({ path : `${process.env.HOME}/data/finance.db` });
   await dataBase.run({
@@ -32,14 +30,14 @@ async function main() {
     await getProductsInfo();
     products = await selectProductsInfo();
   }
-  const pifs = products.filter(({ type }) => type === 'pif')
+  const pifs = products.filter(({ type }) => type === 'pif').filter(({ alias }) => alias !== 'zpif_osk')
   for (const pif of pifs) {
     try {
       const response = await getPifGraph(pif.alias);
       const lastItem = response[response.length - 1]
       console.log(`Считан "${pif.title}", последняя дата: ${lastItem.date.toLocaleDateString('ru-RU')}, стоимость пая: ${lastItem.price}, СЧА: ${lastItem.scha}`)
     } catch(e) {
-      console.log(`Ошибка при чтении "${pif.title}"`)
+      console.log(`Ошибка при чтении name:"${pif.title}" alias:"${pif.alias}"`)
     }
     
   }
