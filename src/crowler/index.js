@@ -30,7 +30,7 @@ async function main() {
       alias text,
       date text,
       price integer,
-      scha integer,
+      scha integer
     )`
   });
   let products = await selectProductsInfo();
@@ -39,17 +39,18 @@ async function main() {
     await getProductsInfo();
     products = await selectProductsInfo();
   }
-  const pifs = products.filter(({ type }) => type === 'pif').filter(({ alias }) => alias !== 'zpif_osk')
-  for (const pif of pifs) {
+  const pifs = products.filter(({ type }) => type === 'pif').filter(({ alias }) => alias !== 'zpif_osk');
+  const datas = [];
+  for (const pif of pifs[0]) {
     try {
       const response = await getPifGraph(pif.alias);
-      const lastItem = response[response.length - 1]
-      console.log(`Считан "${pif.title}", последняя дата: ${lastItem.date.toLocaleDateString('ru-RU')}, стоимость пая: ${lastItem.price}, СЧА: ${lastItem.scha}`)
+      const lastItem = response[response.length - 1];
+      datas.push({...lastItem, title: pif.title })
     } catch(e) {
-      console.log(`Ошибка при чтении name:"${pif.title}" alias:"${pif.alias}"`)
+      console.log(`Ошибка при чтении name:"${pif.title}" alias:"${pif.alias}"`, e)
     }
-    
   }
+  console.table(datas, ['title', 'date', 'price', 'scha'])
   await dataBase.close();
 }
 
