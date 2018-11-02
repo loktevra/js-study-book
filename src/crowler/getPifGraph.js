@@ -15,7 +15,7 @@ module.exports = async function getPifGraph(pifAlias) {
       if (options.column === 'date') {
         return `${value.slice(0, 4)}.${value.slice(4, 6)}.${value.slice(6, 8)}`
       }
-      return Number(value) * 100
+      return value
     },
   })
   return data;

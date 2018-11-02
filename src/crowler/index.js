@@ -32,8 +32,8 @@ async function main() {
       id integer PRIMARY KEY AUTOINCREMENT,
       alias text,
       date text,
-      price integer,
-      scha integer
+      price text,
+      scha text
     )`
   });
   console.log('Таблица alfaCapitalPifsGraphs создана или существует')
