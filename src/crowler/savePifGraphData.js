@@ -37,23 +37,23 @@ function needLoad(graph) {
 
 module.exports = async function savePifGraphData(alias, title) {
   try {
-    console.log(`Начата процедура получения табличных данных по ПИФ "${title}"`)
     let graph = await getGraph(alias);
   
     if (needLoad(graph)) {
       console.log('Данные устарели, загрузка новых')
       const response = await getPifGraph(alias);
-      await dataBase.run({ query: 'BEGIN;' })
+
       for (const item of response) {
         await dataBase.run({
-          query: `INSERT INTO alfaCapitalPifsGraphs(alias,date,price,scha) VALUES ("${alias}","${item.date}","${item.price}","${item.scha}");`,
+          query: `INSERT INTO alfaCapitalPifsGraphs(alias,date,price,scha) VALUES ("${alias}",${item.date},${item.price},${item.scha});`,
         });
         
       }
-      await dataBase.run({ query: 'COMMIT;' })
       graph = await getGraph(alias);
+      console.log(`Данные для "${title}" загружены`)
+    } else {
+      console.log(`Данные для "${title}" в актуальном состоянии`)
     }
-    console.log(`Загрузка "${title}" завершена`)
     return graph;
   } catch (e) {
     console.log(e);
