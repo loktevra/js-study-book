@@ -3,16 +3,16 @@ const _ = require('lodash');
 const dataBase = require('./dataBase');
 const getPifGraph = require('./getPifGraph');
 
-async function getGraph(alias) {
+async function getGraph(aliasId) {
   try {
     const graph = await dataBase.all({
       query: `SELECT 
-        alias,
+        aliasId,
         date,
         price,
         scha
         FROM alfaCapitalPifsGraphs
-        WHERE alias LIKE '${alias}'
+        WHERE aliasId LIKE ${aliasId}
         ORDER BY date;
       `,
     })
@@ -36,9 +36,9 @@ function needLoad(graph) {
 }
 
 
-module.exports = async function savePifGraphData(alias, title) {
+module.exports = async function savePifGraphData(aliasId, alias, title) {
   try {
-    let graph = await getGraph(alias);
+    let graph = await getGraph(aliasId);
   
     if (needLoad(graph)) {
       console.log('Данные устарели, загрузка новых')
@@ -47,11 +47,11 @@ module.exports = async function savePifGraphData(alias, title) {
 
       for (const item of olderItems) {
         await dataBase.run({
-          query: `INSERT INTO alfaCapitalPifsGraphs(alias,date,price,scha) VALUES ("${alias}",${item.date},${item.price},${item.scha});`,
+          query: `INSERT INTO alfaCapitalPifsGraphs(aliasId,date,price,scha) VALUES ("${aliasId}",${item.date},${item.price},${item.scha});`,
         });
         
       }
-      graph = await getGraph(alias);
+      graph = await getGraph(aliasId);
       console.log(`Данные для "${title}" загружены. Добавлено: ${olderItems.length}`)
     } else {
       console.log(`Данные для "${title}" в актуальном состоянии`)

@@ -3,6 +3,7 @@ const dataBase = require('./dataBase');
 module.exports = async function selectProductsInfo() {
   return await dataBase.all({
     query: `SELECT 
+      id,
       alias,
       currency,
       maxamount,

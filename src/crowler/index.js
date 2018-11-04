@@ -30,7 +30,7 @@ async function main() {
   await dataBase.run({
     query: `CREATE TABLE IF NOT EXISTS alfaCapitalPifsGraphs(
       id integer PRIMARY KEY AUTOINCREMENT,
-      alias text,
+      aliasId integer,
       date integer,
       price integer,
       scha integer
@@ -50,7 +50,7 @@ async function main() {
   await dataBase.run({ query: 'BEGIN;' })
   for (const pif of pifs) {
     try {
-      const response = await savePifGraphData(pif.alias, pif.title);
+      const response = await savePifGraphData(pif.id, pif.alias, pif.title);
       const lastItem = response[response.length - 1];
       datas.push({ date: new Date(lastItem.date).toLocaleDateString(), price: lastItem.price / 100, scha: lastItem.scha / 100, title: pif.title })
     } catch(e) {
