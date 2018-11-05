@@ -1,11 +1,7 @@
-const alfaCapitalUrls = require('./alfaCapitalUrls');
-const httpClient = require('./httpClient');
-const dataBase = require('./dataBase');
+const dbClient = require('../../services').dbClient;
 
-module.exports = async function getProductsInfo() {
-  const response = await httpClient.get(alfaCapitalUrls.getProductsInfoUrl());
-  const body = JSON.parse(response)
-  await dataBase.run({
+module.exports = async function getProductsList(alfaCapitalProductsList) {
+  await dbClient.run({
     query: `INSERT INTO alfaCapitalProducts(
       alias,
       currency,
@@ -20,8 +16,8 @@ module.exports = async function getProductsInfo() {
       title,
       type,
       url
-    ) VALUES ${body.map(()=> '(?,?,?,?,?,?,?,?,?,?,?,?,?)').join(',')}`,
-    data: body.map((item) => [
+    ) VALUES ${alfaCapitalProductsList.map(()=> '(?,?,?,?,?,?,?,?,?,?,?,?,?)').join(',')}`,
+    data: alfaCapitalProductsList.map((item) => [
       item.alias,
       item.currency,
       item.maxamount,

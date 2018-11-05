@@ -1,6 +1,6 @@
 const parse = require('csv-parse/lib/sync')
 
-const httpClient = require('./httpClient');
+const httpClient = require('../../services/httpClient');
 const alfaCapitalUrls = require('./alfaCapitalUrls');
 
 module.exports = async function getPifGraph(pifAlias) {

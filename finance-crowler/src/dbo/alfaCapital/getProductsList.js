@@ -1,7 +1,7 @@
-const dataBase = require('./dataBase');
+const dbClient = require('../../services/').dbClient;
 
 module.exports = async function selectProductsInfo() {
-  return await dataBase.all({
+  return await dbClient.all({
     query: `SELECT 
       id,
       alias,
