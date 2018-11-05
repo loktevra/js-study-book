@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>jQuery Hello world!</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <input id="input" placeholder="Введите текст" value="World"/>
+      <br />
+      Hello, <span id="text">World</span>!
+    </div>
+    <script>
+$("#input").on( "input", e => {
+  $("#text").html(e.target.value || 'World');
+});
+    </script>
+  </body>
+</html>
