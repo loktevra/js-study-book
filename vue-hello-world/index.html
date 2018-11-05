@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Vue Hello world!</title>
+    <script src="https://unpkg.com/vue@2.5.17/dist/vue.js" crossorigin></script>
+  </head>
+  <body>
+    <div id="vue_container">
+      <input v-model="text" placeholder="Введите текст"/>
+      <br />
+      Hello, {{ text || 'World'}}!
+    </div>
+    <script>
+new Vue({
+  el: '#vue_container',
+  data: {
+    text: 'World'
+  },
+})
+    </script>
+  </body>
+</html>

@@ -8,6 +8,37 @@
   </head>
   <body>
     <div id="react_container"></div>
-    <script src="index.js"></script>
+    <script>
+class HelloWorld extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { text: 'World' };
+  }
+
+  render() {
+    return React.createElement(
+      React.Fragment,
+      {},
+      React.createElement(
+        'input',
+        {
+          value: this.state.text,
+          placeholder: 'Введите текст',
+          onChange: (e) => this.setState({ text: e.target.value })
+        },
+      ),
+      React.createElement('br'),
+      'Hello, ',
+      this.state.text || 'World',
+      '!',
+    );
+    
+  }
+}
+
+const domContainer = document.querySelector('#react_container');
+
+ReactDOM.render(React.createElement(HelloWorld), domContainer);
+    </script>
   </body>
 </html>
