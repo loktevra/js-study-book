@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>jQuery Hello world!</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+    <script src="backbone.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <input placeholder="Введите текст" value="World" id="field"/>
+      <div id="text-template"></div>
+    </div>
+    <script>
+var TextView = Backbone.View.extend({
+  tagName: 'span',
+  template: _.template('<%= value %>'),
+  initialize: function(value) {
+    this.value = value || 'World';
+  },
+  render() {
+    this.$el.html(this.template({ value: `Hello, ${this.value}!` }));
+    return this;
+  }
+});
+
+
+var AppView = Backbone.View.extend({
+  el : '#container',
+  events : {
+    'input #field' : 'addToHelloCollection'
+  },
+  initialize() {
+    var textView = new TextView()
+    this.$("#text-template").html(textView.render().el);
+  },
+  addToHelloCollection(e) {
+    var textView = new TextView(e.target.value)
+    this.$("#text-template").html(textView.render().el);
+  },
+});
+
+new AppView();
+    </script>
+  </body>
+</html>
