@@ -5,6 +5,8 @@ const api = require('./api');
 const dbo = require('./dbo');
 const dbClient = require('./services').dbClient;
 
+const httpServerStart = require('./httpServerStart');
+
 function needLoad(graph) {
   if (graph && graph.length) {
     const dateDiff = new Date() - new Date(_.last(graph).date || 0);
@@ -57,7 +59,10 @@ async function main() {
   await dbClient.run({ query: 'COMMIT;' })
   console.log('Последняя актуальная информация по ПИФам:')
   console.table(datas, ['title', 'date', 'price', 'scha'])
-  await dbClient.close();
+
+  await httpServerStart();
+  
+  // await dbClient.close();
 }
 
 main();
