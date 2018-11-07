@@ -38,7 +38,12 @@ async function main() {
   await dbClient.run({ query: 'BEGIN;' })
   for (const pif of pifs) {
     try {
-      let graph = await dbo.alfaCapital.getGraph(pif.id);
+      let graph;
+      try {
+        graph = await dbo.alfaCapital.getGraph(pif.id);
+      } catch (error) {
+        graph = null;
+      }
 
       if (needLoad(graph)) {
         console.log(`Данные ${pif.title} устарели, загрузка новых`)
