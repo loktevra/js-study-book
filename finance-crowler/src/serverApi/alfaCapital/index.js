@@ -1,0 +1,2 @@
+require('./graph');
+require('./productsInfo');

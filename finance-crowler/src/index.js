@@ -4,8 +4,9 @@ const _ = require('lodash');
 const api = require('./api');
 const dbo = require('./dbo');
 const dbClient = require('./services').dbClient;
+const httpServer = require('./services').httpServer;
 
-const httpServerStart = require('./httpServerStart');
+require('./serverApi');
 
 function needLoad(graph) {
   if (graph && graph.length) {
@@ -65,7 +66,7 @@ async function main() {
   console.log('Последняя актуальная информация по ПИФам:')
   console.table(datas, ['title', 'date', 'price', 'scha'])
 
-  await httpServerStart();
+  await httpServer.listen(8000);
   
   // await dbClient.close();
 }
