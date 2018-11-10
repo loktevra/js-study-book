@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Finance-crowler</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="react_container"></div>
+    <script type="text/babel">
+const currency = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB'})
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { graph: [], products: [] };
+  }
+
+  componentDidMount() {
+    fetch('/alfa-capital/products-info?only_actual_pifs=true')
+      .then(response => response.json())
+      .then(response => {
+        this.setState({ products: response.data });
+        this.changePif(response.data[0].id);
+      })
+  }
+
+  render() {
+    const {
+      products,
+      graph,
+    } = this.state;
+
+    return <>
+      <select onChange={(e) => this.changePif(e.target.value)}>
+        {products.map(({ id, title}) => (
+          <option key={id} value={id}>{title}</option>
+        ))}
+      </select>
+      <br/>
+      <br/>
+      <table table="1" rules="rows" width="400px" frame="hsides">
+        <thead>
+          <tr>
+            <th align="left">Дата</th>
+            <th align="right">цена</th>
+            <th align="right">СЧА</th>
+          </tr>
+        </thead>
+        <tbody>
+          {graph.map(({date, price, scha}) => (
+            <tr key={date}>
+              <td align="left" width="75">{new Date(date).toLocaleDateString('ru-RU',{ year: 'numeric', month: 'numeric', day: 'numeric'})}</td>
+              <td align="right">{currency.format(price / 100)}</td>
+              <td align="right">{currency.format(scha / 100)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  }
+
+  changePif = (value) => {
+    fetch(`/alfa-capital/graph?id=${value}`)
+      .then(response => response.json())
+      .then(response => {
+        this.setState({ graph: response.data });
+      })
+  }
+}
+
+const domContainer = document.querySelector('#react_container');
+
+ReactDOM.render(<App />, domContainer);
+    </script>
+  </body>
+</html>
