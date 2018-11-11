@@ -6,15 +6,16 @@
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   </head>
   <body>
     <div id="react_container"></div>
     <script type="text/babel">
 const currency = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB'})
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { graph: [], products: [] };
+  state = { graph: [], products: [] };
+  elements = {
+    graph: React.createRef()
   }
 
   componentDidMount() {
@@ -40,20 +41,21 @@ class App extends React.Component {
       </select>
       <br/>
       <br/>
+      <div ref={this.elements.graph}></div>
       <table table="1" rules="rows" width="400px" frame="hsides">
         <thead>
           <tr>
             <th align="left">Дата</th>
-            <th align="right">цена</th>
+            <th align="right">Цена</th>
             <th align="right">СЧА</th>
           </tr>
         </thead>
         <tbody>
           {graph.map(({date, price, scha}) => (
             <tr key={date}>
-              <td align="left" width="75">{new Date(date).toLocaleDateString('ru-RU',{ year: 'numeric', month: 'numeric', day: 'numeric'})}</td>
-              <td align="right">{currency.format(price / 100)}</td>
-              <td align="right">{currency.format(scha / 100)}</td>
+              <td align="left" width="75">{date.toLocaleDateString('ru-RU',{ year: 'numeric', month: 'numeric', day: 'numeric'})}</td>
+              <td align="right">{currency.format(price)}</td>
+              <td align="right">{currency.format(scha)}</td>
             </tr>
           ))}
         </tbody>
@@ -65,8 +67,34 @@ class App extends React.Component {
     fetch(`/alfa-capital/graph?id=${value}`)
       .then(response => response.json())
       .then(response => {
-        this.setState({ graph: response.data });
+        this.setState({
+          graph: response.data.map(({date, price, scha}) => ({
+            date: new Date(date),
+            price: price / 100,
+            scha: scha / 100,
+          })),
+        });
+        this.drawChart();
       })
+  }
+
+  drawChart = () => {
+    google.charts.load('current', {packages:['corechart']});
+    google.charts.setOnLoadCallback(() => {
+      const data = google.visualization.arrayToDataTable([
+        ['Дата', 'Цена'],
+        ...this.state.graph.map(({ date, price, scha }) => [date, price]),
+      ]);
+  
+      const options = {
+        title: 'Company Performance',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+      };
+      
+      const chart = new google.visualization.LineChart(this.elements.graph.current);
+      chart.draw(data, options);
+    });
   }
 }
 
