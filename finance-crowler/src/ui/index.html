@@ -11,12 +11,80 @@
   <body>
     <div id="react_container"></div>
     <script type="text/babel">
+class Graph extends React.PureComponent {
+  root = React.createRef();
+  componentDidMount() {
+    this.draw();
+  }
+  componentDidUpdate() {
+    this.draw();
+  }
+  render() {
+    return (
+      <div ref={this.root} style={{height: '800px'}}></div>
+    )
+  }
+
+  draw = () => {
+    google.charts.load('current', {packages:['corechart']});
+    google.charts.setOnLoadCallback(() => {
+      const data = google.visualization.arrayToDataTable([
+        ['Дата', 'Цена'],
+        ...this.props.value.map(({ date, price, scha }) => [date, price]),
+      ]);
+  
+      const options = {
+        title: 'Company Performance',
+        curveType: 'none',
+        legend: { position: 'bottom' },
+        chartArea: {
+          height: 700,
+          width: '90%',
+        }
+      };
+      
+      const chart = new google.visualization.LineChart(this.root.current);
+      chart.draw(data, options);
+    });
+  }
+}
+
+class Table extends React.PureComponent {
+  render() {
+    const {
+      value,
+    } = this.props;
+
+    return (
+      <table table="1" rules="rows" width="400px" frame="hsides">
+        <thead>
+          <tr>
+            <th align="left">Дата</th>
+            <th align="right">Цена</th>
+            <th align="right">СЧА</th>
+          </tr>
+        </thead>
+        <tbody>
+          {value.map(({date, price, scha}) => (
+            <tr key={date}>
+              <td align="left" width="75">{date.toLocaleDateString('ru-RU',{ year: 'numeric', month: 'numeric', day: 'numeric'})}</td>
+              <td align="right">{currency.format(price)}</td>
+              <td align="right">{currency.format(scha)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+}
+
 const currency = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB'})
 class App extends React.Component {
-  state = { graph: [], products: [] };
-  elements = {
-    graph: React.createRef()
-  }
+  state = {
+    graph: [],
+    products: [],
+    viewType: 'graph'
+  };
 
   componentDidMount() {
     fetch('/alfa-capital/products-info?only_actual_pifs=true')
@@ -31,6 +99,7 @@ class App extends React.Component {
     const {
       products,
       graph,
+      viewType,
     } = this.state;
 
     return <>
@@ -41,25 +110,14 @@ class App extends React.Component {
       </select>
       <br/>
       <br/>
-      <div ref={this.elements.graph}></div>
-      <table table="1" rules="rows" width="400px" frame="hsides">
-        <thead>
-          <tr>
-            <th align="left">Дата</th>
-            <th align="right">Цена</th>
-            <th align="right">СЧА</th>
-          </tr>
-        </thead>
-        <tbody>
-          {graph.map(({date, price, scha}) => (
-            <tr key={date}>
-              <td align="left" width="75">{date.toLocaleDateString('ru-RU',{ year: 'numeric', month: 'numeric', day: 'numeric'})}</td>
-              <td align="right">{currency.format(price)}</td>
-              <td align="right">{currency.format(scha)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <input type="radio" name="viewType" value="table" onChange={() => this.setState({ viewType: 'table' })} /> Таблица
+      <input type="radio" name="viewType" value="graph" defaultChecked onChange={() => this.setState({ viewType: 'graph' })}/> График
+      {viewType == 'graph' &&
+        <Graph value={graph}/>
+      }
+      {viewType == 'table' &&
+        <Table value={graph}/>
+      }
     </>
   }
 
@@ -74,27 +132,7 @@ class App extends React.Component {
             scha: scha / 100,
           })),
         });
-        this.drawChart();
       })
-  }
-
-  drawChart = () => {
-    google.charts.load('current', {packages:['corechart']});
-    google.charts.setOnLoadCallback(() => {
-      const data = google.visualization.arrayToDataTable([
-        ['Дата', 'Цена'],
-        ...this.state.graph.map(({ date, price, scha }) => [date, price]),
-      ]);
-  
-      const options = {
-        title: 'Company Performance',
-        curveType: 'function',
-        legend: { position: 'bottom' }
-      };
-      
-      const chart = new google.visualization.LineChart(this.elements.graph.current);
-      chart.draw(data, options);
-    });
   }
 }
 
