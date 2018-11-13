@@ -122,7 +122,10 @@ class App extends React.Component {
   }
 
   changePif = (value) => {
-    fetch(`/alfa-capital/graph?id=${value}`)
+    const nowDate = new Date();
+    const m = nowDate.getMonth();
+    nowDate.setMonth(nowDate.getMonth() - 3);
+    fetch(`/alfa-capital/graph?id=${value}&minDate=${nowDate.toISOString().split('T')[0]}`)
       .then(response => response.json())
       .then(response => {
         this.setState({

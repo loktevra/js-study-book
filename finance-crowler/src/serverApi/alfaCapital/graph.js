@@ -8,7 +8,7 @@ async function graph(req, res) {
       query,
     } = url.parse(req.url, true);
 
-    const graph = await dbo.alfaCapital.getGraph(query.id);
+    const graph = await dbo.alfaCapital.getGraph(query.id, query.minDate);
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(JSON.stringify({ status: 'success', data: graph }));
