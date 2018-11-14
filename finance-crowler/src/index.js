@@ -41,7 +41,7 @@ async function main() {
     try {
       let graph;
       try {
-        graph = await dbo.alfaCapital.getGraph(pif.id);
+        graph = await dbo.alfaCapital.getGraph({ aliasId: pif.id });
       } catch (error) {
         graph = null;
       }
@@ -54,7 +54,7 @@ async function main() {
         await dbo.alfaCapital.savePifGraphData(pif.id, olderItems);
         console.log(`Добавлено ${olderItems.length}`)
 
-        graph = await dbo.alfaCapital.getGraph(pif.id);
+        graph = await dbo.alfaCapital.getGraph({ aliasId: pif.id });
       }
       const lastItem = _.last(graph);
       datas.push({ date: new Date(lastItem.date).toLocaleDateString(), price: lastItem.price / 100, scha: lastItem.scha / 100, title: pif.title })

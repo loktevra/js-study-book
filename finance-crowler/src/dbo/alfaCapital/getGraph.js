@@ -1,6 +1,6 @@
 const dbClient = require('../../services').dbClient;
 
-module.exports = async function getGraph(aliasId, minDate) {
+module.exports = async function getGraph({ aliasId, minDate }) {
   const graph = await dbClient.all({
     query: `SELECT 
       aliasId,
