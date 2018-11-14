@@ -6,6 +6,6 @@ import HelloWorld from './helloWorld';
 const domContainer = document.querySelector('#react_container');
 
 ReactDOM.render(
-  React.createElement(HelloWorld),
+  <HelloWorld />,
   domContainer
 );
