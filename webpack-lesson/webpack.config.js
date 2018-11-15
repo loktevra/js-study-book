@@ -6,7 +6,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const baseConfig = {
   entry: './src/index.js',
   output: {
-    filename: '[name].js',
+    filename: '[name]-[hash:5].js',
     path: path.resolve(__dirname, 'dist')
   },
   module: {

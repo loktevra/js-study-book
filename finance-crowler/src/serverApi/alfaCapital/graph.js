@@ -9,10 +9,11 @@ async function graph(req, res) {
     } = url.parse(req.url, true);
     const {
       id,
+      maxDate,
       minDate,
     } = query;
 
-    const graph = await dbo.alfaCapital.getGraph({ aliasId: id, minDate });
+    const graph = await dbo.alfaCapital.getGraph({ aliasId: id, minDate, maxDate });
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(JSON.stringify({ status: 'success', data: graph }));
