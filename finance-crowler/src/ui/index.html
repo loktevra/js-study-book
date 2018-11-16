@@ -11,6 +11,10 @@
   <body>
     <div id="react_container"></div>
     <script type="text/babel">
+function getISODate(date) {
+  return date.toISOString().split('T')[0]
+}
+
 class Graph extends React.PureComponent {
   root = React.createRef();
   componentDidMount() {
@@ -126,7 +130,7 @@ class App extends React.Component {
     minDate.setMonth(minDate.getMonth() - 3);
     const maxDate = new Date();
     maxDate.setMonth(maxDate.getMonth() - 1);
-    fetch(`/alfa-capital/graph?id=${value}&minDate=${minDate.toISOString().split('T')[0]}&maxDate=${maxDate.toISOString().split('T')[0]}`)
+    fetch(`/alfa-capital/graph?id=${value}&minDate=${getISODate(minDate)}&maxDate=${getISODate(maxDate)}`)
       .then(response => response.json())
       .then(response => {
         this.setState({
