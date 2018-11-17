@@ -87,16 +87,40 @@ class App extends React.Component {
   state = {
     graph: [],
     products: [],
-    viewType: 'graph'
+    viewType: 'graph',
+    minDate: (() => {
+      const minDate = new Date();
+      minDate.setMonth(minDate.getMonth() - 3);
+      return minDate;
+    })(),
+    maxDate: new Date(),
+    productId: null,
   };
 
   componentDidMount() {
     fetch('/alfa-capital/products-info?only_actual_pifs=true')
       .then(response => response.json())
       .then(response => {
-        this.setState({ products: response.data });
-        this.changePif(response.data[0].id);
+        this.setState({ products: response.data, productId: response.data[0].id });
       })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {
+      maxDate,
+      minDate,
+      productId,
+    } = this.state;
+    if (productId === null) {
+      return
+    }
+    if (
+      prevState.productId !== productId
+      || prevState.maxDate !== maxDate
+      || prevState.minDate !== minDate
+    ) {
+      this.changePif();
+    }
   }
 
   render() {
@@ -104,10 +128,12 @@ class App extends React.Component {
       products,
       graph,
       viewType,
+      maxDate,
+      minDate,
     } = this.state;
 
     return <>
-      <select onChange={(e) => this.changePif(e.target.value)}>
+      <select onChange={(e) => this.setState({ productId: e.target.value })}>
         {products.map(({ id, title}) => (
           <option key={id} value={id}>{title}</option>
         ))}
@@ -116,6 +142,20 @@ class App extends React.Component {
       <br/>
       <input type="radio" name="viewType" value="table" onChange={() => this.setState({ viewType: 'table' })} /> Таблица
       <input type="radio" name="viewType" value="graph" defaultChecked onChange={() => this.setState({ viewType: 'graph' })}/> График
+      <input
+        type="date"
+        name="minDate"
+        value={getISODate(minDate)}
+        max={getISODate(maxDate)}
+        onChange={(e) => this.setState({ minDate: new Date(e.target.value) })}
+      />
+      <input
+        type="date"
+        name="maxDate"
+        value={getISODate(maxDate)}
+        min={getISODate(minDate)}
+        onChange={(e) => this.setState({ maxDate: new Date(e.target.value) })}
+      /> 
       {viewType == 'graph' &&
         <Graph value={graph}/>
       }
@@ -125,12 +165,13 @@ class App extends React.Component {
     </>
   }
 
-  changePif = (value) => {
-    const minDate = new Date();
-    minDate.setMonth(minDate.getMonth() - 3);
-    const maxDate = new Date();
-    maxDate.setMonth(maxDate.getMonth() - 1);
-    fetch(`/alfa-capital/graph?id=${value}&minDate=${getISODate(minDate)}&maxDate=${getISODate(maxDate)}`)
+  changePif = () => {
+    const {
+      maxDate,
+      minDate,
+      productId,
+    } = this.state;
+    fetch(`/alfa-capital/graph?id=${productId}&minDate=${getISODate(minDate)}&maxDate=${getISODate(maxDate)}`)
       .then(response => response.json())
       .then(response => {
         this.setState({
