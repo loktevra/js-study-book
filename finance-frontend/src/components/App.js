@@ -77,7 +77,7 @@ class App extends React.Component {
         onChange={(e) => this.setState({ maxDate: new Date(e.target.value) })}
       /> 
       {viewType == 'graph' &&
-        <Graph value={graph}/>
+        <Graph value={graph.map(({ date, price }) => [date, price])} columns={['Дата', 'Цена']}/>
       }
       {viewType == 'table' &&
         <Table value={graph}/>

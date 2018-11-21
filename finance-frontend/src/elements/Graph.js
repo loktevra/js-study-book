@@ -9,8 +9,8 @@ class Graph extends React.PureComponent {
         width="100%"
         height="800px"
         data={[
-          ['Дата', 'Цена'],
-          ...this.props.value.map(({ date, price }) => [date, price]),
+          this.props.columns,
+          ...this.props.value,
         ]}
         options={{
           title: 'Company Performance',
