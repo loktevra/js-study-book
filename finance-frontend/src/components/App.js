@@ -58,10 +58,12 @@ class App extends React.Component {
           <option key={id} value={id}>{title}</option>
         ))}
       </select>
+      <select onChange={(e) => this.setState({ viewType: e.target.value })}>
+        <option value="graph" defaultChecked>График</option>
+        <option value="table">Таблица</option>
+      </select>
       <br/>
       <br/>
-      <input type="radio" name="viewType" value="table" onChange={() => this.setState({ viewType: 'table' })} /> Таблица
-      <input type="radio" name="viewType" value="graph" defaultChecked onChange={() => this.setState({ viewType: 'graph' })}/> График
       <input
         type="date"
         name="minDate"
