@@ -13,34 +13,17 @@ class App extends React.Component {
     minDate: (() => {
       const minDate = new Date();
       minDate.setMonth(minDate.getMonth() - 3);
-      return minDate;
+      return getISODate(minDate);
     })(),
-    maxDate: new Date(),
+    maxDate: getISODate(new Date()),
     productId: null,
   };
 
   componentDidMount() {
     API.getProducts().then(response => {      
       this.setState({ products: response.data, productId: response.data[0].id });
-    })
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const {
-      maxDate,
-      minDate,
-      productId,
-    } = this.state;
-    if (productId === null) {
-      return
-    }
-    if (
-      prevState.productId !== productId
-      || prevState.maxDate !== maxDate
-      || prevState.minDate !== minDate
-    ) {
       this.changePif();
-    }
+    })
   }
 
   render() {
@@ -53,7 +36,11 @@ class App extends React.Component {
     } = this.state;
 
     return <>
-      <select onChange={(e) => this.setState({ productId: e.target.value })}>
+      <select
+        onChange={(e) => {
+          this.setState({ productId: e.target.value }, this.changePif);
+        }}
+      >
         {products.map(({ id, title}) => (
           <option key={id} value={id}>{title}</option>
         ))}
@@ -64,20 +51,27 @@ class App extends React.Component {
       </select>
       <br/>
       <br/>
-      <input
-        type="date"
-        name="minDate"
-        value={getISODate(minDate)}
-        max={getISODate(maxDate)}
-        onChange={(e) => this.setState({ minDate: new Date(e.target.value) })}
-      />
-      <input
-        type="date"
-        name="maxDate"
-        value={getISODate(maxDate)}
-        min={getISODate(minDate)}
-        onChange={(e) => this.setState({ maxDate: new Date(e.target.value) })}
-      /> 
+      <form
+        onSubmit={this.formHandler}
+      >
+        <input
+          type="date"
+          name="minDate"
+          value={minDate}
+          max={maxDate}
+          onChange={(e) => this.setState({ minDate: e.target.value })}
+        />
+        <input
+          type="date"
+          name="maxDate"
+          value={maxDate}
+          min={minDate}
+          onChange={(e) => this.setState({ maxDate: e.target.value })}
+        />
+        <input
+          type="submit"
+        />
+      </form>
       {viewType == 'graph' &&
         <Graph value={graph.map(({ date, price }) => [date, price])} columns={['Дата', 'Цена']}/>
       }
@@ -87,12 +81,17 @@ class App extends React.Component {
     </>
   }
 
+  formHandler = (e) => {
+    e.preventDefault();
+    this.changePif();
+  }
+
   changePif = () => {
     const {
       maxDate,
       minDate,
       productId,
-    } = this.state;
+    } = this.state;    
     API.getGraph({ maxDate, minDate, productId }).then(response => {
       this.setState({
         graph: response.data.map(({date, price, scha}) => ({
