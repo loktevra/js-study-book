@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import Table from '../elements/Table';
 import Graph from '../elements/Graph';
 import * as API from '../api';
@@ -17,11 +18,18 @@ class App extends React.Component {
     })(),
     maxDate: getISODate(new Date()),
     productId: null,
+    selectedProducts: [],
   };
 
   componentDidMount() {
     API.getProducts().then(response => {      
-      this.setState({ products: response.data, productId: response.data[0].id });
+      this.setState({
+        products: response.data,
+        selectedProducts: [{
+          id: response.data[0].id,
+          title: response.data[0].title
+        }],
+      });
       this.changePif();
     })
   }
@@ -33,12 +41,18 @@ class App extends React.Component {
       viewType,
       maxDate,
       minDate,
+      selectedProducts,
     } = this.state;
 
     return <>
       <select
+        multiple
         onChange={(e) => {
-          this.setState({ productId: e.target.value }, this.changePif);
+          const values = _.map(e.target.selectedOptions, 'value').map(id => ({
+            id,
+            title: _.find(products, id)
+          }))
+          this.setState({ selectedProducts: values }, this.changePif);
         }}
       >
         {products.map(({ id, title}) => (
@@ -73,7 +87,7 @@ class App extends React.Component {
         />
       </form>
       {viewType == 'graph' &&
-        <Graph value={graph.map(({ date, price }) => [date, price])} columns={['Дата', 'Цена']}/>
+        <Graph value={( graph[0] || []).map(({ date, price }) => [date, price])} columns={['Дата', selectedProducts.map(({ title }) => title)]}/>
       }
       {viewType == 'table' &&
         <Table value={graph}/>
@@ -86,21 +100,23 @@ class App extends React.Component {
     this.changePif();
   }
 
-  changePif = () => {
+  changePif = async () => {
     const {
       maxDate,
       minDate,
-      productId,
-    } = this.state;    
-    API.getGraph({ maxDate, minDate, productId }).then(response => {
-      this.setState({
-        graph: response.data.map(({date, price, scha}) => ({
-          date: new Date(date),
-          price: price / 100,
-          scha: scha / 100,
-        })),
-      });
-    })
+      selectedProducts,
+    } = this.state;
+    const responses = (await Promise.all(selectedProducts.map(({ id }) => API.getGraph({ maxDate, minDate, productId: id })))).map(({ data }) => data)
+    const graph = responses.map(data => data.map(({date, price, scha, aliasId}) => ({
+      date: new Date(date),
+      price: price / 100,
+      scha: scha / 100,
+      aliasId,
+    })));
+    this.setState({
+      graph
+    });
+    
   }
 }
 
