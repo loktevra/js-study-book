@@ -48,9 +48,9 @@ class App extends React.Component {
       <select
         multiple
         onChange={(e) => {
-          const values = _.map(e.target.selectedOptions, 'value').map(id => ({
+          const values = _.map(e.target.selectedOptions, 'value').map(Number).map(id => ({
             id,
-            title: _.find(products, id)
+            title: _.find(products, { id }).title
           }))
           this.setState({ selectedProducts: values }, this.changePif);
         }}
@@ -87,7 +87,7 @@ class App extends React.Component {
         />
       </form>
       {viewType == 'graph' &&
-        <Graph value={( graph[0] || []).map(({ date, price }) => [date, price])} columns={['Дата', selectedProducts.map(({ title }) => title)]}/>
+        <Graph value={graph}/>
       }
       {viewType == 'table' &&
         <Table value={graph}/>
@@ -107,14 +107,18 @@ class App extends React.Component {
       selectedProducts,
     } = this.state;
     const responses = (await Promise.all(selectedProducts.map(({ id }) => API.getGraph({ maxDate, minDate, productId: id })))).map(({ data }) => data)
-    const graph = responses.map(data => data.map(({date, price, scha, aliasId}) => ({
-      date: new Date(date),
-      price: price / 100,
-      scha: scha / 100,
-      aliasId,
-    })));
+    const graph = _(responses)
+      .flatten()
+      .groupBy('date')
+      .map(items => items.reduce((acc, item) => {
+        acc[0] = new Date(item.date);
+        acc[_.findIndex(selectedProducts, { id: item.aliasId }) + 1] = item.price / 100
+        return acc
+      }, Array(selectedProducts.length + 1).fill(undefined)))
+      .value();
+    graph.unshift(['Дата', ...selectedProducts.map(({ title }) => title)]);
     this.setState({
-      graph
+      graph,
     });
     
   }
