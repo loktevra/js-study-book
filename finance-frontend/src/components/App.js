@@ -111,7 +111,7 @@ class App extends React.Component {
       .flatten()
       .groupBy('date')
       .map(items => items.reduce((acc, item) => {
-        acc[0] = new Date(item.date);
+        acc[0] = getISODate(new Date(item.date));
         acc[_.findIndex(selectedProducts, { id: item.aliasId }) + 1] = item.price / 100
         return acc
       }, Array(selectedProducts.length + 1).fill(undefined)))

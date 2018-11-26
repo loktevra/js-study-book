@@ -1,28 +1,27 @@
 import React from 'react';
-
-import { currency } from '../utils'
+import _ from 'lodash';
 
 class Table extends React.PureComponent {
   render() {
     const {
       value,
     } = this.props;
-
+    const [
+      header,
+      ...data
+    ] = value;
+    
     return (
-      <table table="1" rules="rows" width="400px" frame="hsides">
+      <table table="1" rules="rows" width={`${header.length * 200}px`} frame="hsides">
         <thead>
           <tr>
-            <th align="left">Дата</th>
-            <th align="right">Цена</th>
-            <th align="right">СЧА</th>
+            {header.map(name => <th key={_.uniqueId()} align="left">{name}</th>)}
           </tr>
         </thead>
         <tbody>
-          {value.map(({date, price, scha}) => (
-            <tr key={date}>
-              <td align="left" width="75">{date.toLocaleDateString('ru-RU',{ year: 'numeric', month: 'numeric', day: 'numeric'})}</td>
-              <td align="right">{currency.format(price)}</td>
-              <td align="right">{currency.format(scha)}</td>
+          {data.map((row) => (
+            <tr key={_.uniqueId()}>
+              {row.map(value => <td key={_.uniqueId()} align="right">{value}</td>)}
             </tr>
           ))}
         </tbody>
