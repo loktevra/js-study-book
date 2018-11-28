@@ -13,21 +13,32 @@ class Graph extends React.PureComponent {
     const min = _(_(value).nth(1)).flatten().tail().min();
     const diffs = _(_(value).nth(1)).flatten().tail().map(val => val - min).value(); 
 
-    const data = _(value).tail().map((row, index) => {
+    const rows = _(value).tail().map((row, index) => {
       const [
         date,
         ...columns
       ] = row;
 
-      return [date, ...columns.map((item, i) => item - diffs[i])]
+      return [date, ..._.flatten(columns.map((item, i) => [item - diffs[i], item]))]
     }).value();
+
+    const data = [
+      [
+        { role: 'domain', label:value[0][0]},
+        ..._(value[0]).tail().map(item => [
+          { type: 'number', label:item},
+          { role: 'tooltip', label:''},
+        ]).flatten().value(),
+      ],
+      ...rows,
+    ]
 
     return (
       <Chart 
         chartType="LineChart"
         width="100%"
         height="800px"
-        data={[value[0], ...data]}
+        data={data}
         options={{
           title: 'Company Performance',
           curveType: 'none',
