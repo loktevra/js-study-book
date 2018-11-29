@@ -43,6 +43,7 @@ class Graph extends React.PureComponent {
           title: 'Company Performance',
           curveType: 'none',
           legend: { position: 'bottom' },
+          focusTarget: 'category',
           chartArea: {
             height: 700,
             width: '90%',
