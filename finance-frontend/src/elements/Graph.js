@@ -10,8 +10,7 @@ class Graph extends React.PureComponent {
     if (!value || !value.length) {
       return null
     }
-    const min = _(_(value).nth(1)).flatten().tail().min();
-    const diffs = _(_(value).nth(1)).flatten().tail().map(val => val - min).value(); 
+    const diffs = _(_(value).nth(1)).flatten().tail().value();
 
     const rows = _(value).tail().map((row, index) => {
       const [
@@ -19,7 +18,10 @@ class Graph extends React.PureComponent {
         ...columns
       ] = row;
 
-      return [date, ..._.flatten(columns.map((item, i) => [item - diffs[i], item]))]
+      return [date, ..._.flatten(columns.map((item, i) => {
+        const percent = ((item - diffs[i]) / item ) * 100
+        return [percent, `${item} (${Math.round(percent * 100) / 100})`];
+      }))]
     }).value();
 
     const data = [
