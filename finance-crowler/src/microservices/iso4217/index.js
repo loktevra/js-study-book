@@ -5,4 +5,4 @@ function iso4217() {
   })
 }
 
-module.exports = iso4217
+export default iso4217

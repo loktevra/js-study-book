@@ -1,9 +1,9 @@
-const getPifGraph = require('./getPifGraph');
-const getProductsList = require('./getProductsList');
+import getPifGraph from './getPifGraph';
+import getProductsList from './getProductsList';
 
 function alfaCapital() {
   this.add({role: 'alfaCapital', cmd: 'getPifGraph'}, getPifGraph)
   this.add({role: 'alfaCapital', cmd: 'getProductsInfo'}, getProductsList)
 }
 
-module.exports = alfaCapital
+export default alfaCapital

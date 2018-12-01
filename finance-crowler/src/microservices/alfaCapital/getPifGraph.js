@@ -1,11 +1,11 @@
+const axios = require('axios');
 const parse = require('csv-parse/lib/sync')
 
-const httpsClient = require('../../libs/httpClient');
 
 const alfaCapitalUrls = require('./alfaCapitalUrls');
 
-module.exports = async function getPifGraph({ pifAlias }, done) {
-  const response = await httpsClient.get(alfaCapitalUrls.getGrapDataUrl({ pifAlias }));
+export default async function getPifGraph({ pifAlias }, done) {
+  const response = await axios.get(alfaCapitalUrls.getGrapDataUrl({ pifAlias }));
   const data = parse(response, {
     columns: true,
     delimiter: ';',

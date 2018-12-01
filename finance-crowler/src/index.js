@@ -1,9 +1,7 @@
-
-
 const seneca = require('seneca')();
 
-const alfaCapital = require('./microservices/alfaCapital');
-const iso4217 = require('./microservices/iso4217');
+import alfaCapital from './microservices/alfaCapital';
+import iso4217 from './microservices/iso4217';
 const main = require('./microservices/main');
 
 require('./serverApi');
