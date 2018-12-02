@@ -1,12 +1,15 @@
-const axios = require('axios');
-const parse = require('csv-parse/lib/sync')
+import axios from 'axios';
+import * as parse from 'csv-parse/lib/sync';
 
+import alfaCapitalUrls from './alfaCapitalUrls';
 
-const alfaCapitalUrls = require('./alfaCapitalUrls');
+interface IGetPifGraphMsg {
+  pifAlias: string;
+}
 
-export default async function getPifGraph({ pifAlias }, done) {
-  const response = await axios.get(alfaCapitalUrls.getGrapDataUrl({ pifAlias }));
-  const data = parse(response, {
+export default async function getPifGraph({ pifAlias }: IGetPifGraphMsg, done) {
+  const response = await axios.get(alfaCapitalUrls.getGraphDataUrl({ pifAlias }));
+  const data = parse(String(response), {
     columns: true,
     delimiter: ';',
     cast: (value, options) => {
