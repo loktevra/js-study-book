@@ -1,15 +1,23 @@
 import axios from 'axios';
 import * as parse from 'csv-parse/lib/sync';
 
-import alfaCapitalUrls from './alfaCapitalUrls';
+import { act } from '../../../libs/senecaPromis';
+
+import PifGraphPointEntity from '../entity/PifGraphPointEntity';
+import alfaCapitalUrls from '../utils/alfaCapitalUrls';
+import { IRespondCreator } from '../interfaces';
+import { Connection } from 'typeorm';
 
 interface IGetPifGraphMsg {
   pifAlias: string;
 }
 
-export default async function getPifGraph({ pifAlias }: IGetPifGraphMsg, done) {
+export default ({ getConnection }: IRespondCreator) => async function getPifGraph({ pifAlias }: IGetPifGraphMsg, done) {
+  const connection = getConnection()
+  const graph = await connection.manager.find(PifGraphPointEntity);
+  
   const response = await axios.get(alfaCapitalUrls.getGraphDataUrl({ pifAlias }));
-  const data = parse(String(response), {
+  const data = parse(response.data, {
     columns: true,
     delimiter: ';',
     cast: (value, options) => {
@@ -23,5 +31,6 @@ export default async function getPifGraph({ pifAlias }: IGetPifGraphMsg, done) {
       return parseInt(`${parsedFloat[0]}${parsedFloat[1].padEnd(2, '00')}`);
     },
   })
-  done(null, data)
+  console.log(graph, data);
+  done(null)
 }
