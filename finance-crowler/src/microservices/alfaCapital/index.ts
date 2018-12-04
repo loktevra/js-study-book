@@ -1,7 +1,8 @@
 import {createConnection} from "typeorm";
-import getPifGraph from './responds/getPifGraph';
-import getProductsList from './responds/getProductsList';
+import getPifGraph from './actions/getPifGraph';
+import getProductsList from './actions/getProductsList';
 import PifGraphPointEntity from './entity/PifGraphPointEntity';
+import ProductsEntity from './entity/ProductsEntity';
 
 let connection;
 
@@ -21,6 +22,7 @@ function alfaCapital() {
         database:  `${process.env.HOME}/data/AlfaCapital.db`,
         entities: [
           PifGraphPointEntity,
+          ProductsEntity,
         ],
         synchronize: true,
         logging: false
@@ -30,7 +32,7 @@ function alfaCapital() {
     })
   
     this.add({role: 'alfaCapital', cmd: 'getPifGraph'}, getPifGraph({ getConnection }))
-    this.add({role: 'alfaCapital', cmd: 'getProductsInfo'}, getProductsList({ getConnection }))
+    this.add({role: 'alfaCapital', cmd: 'getProductsInfo'}, getProductsList)
     
   } catch (error) {
     console.log(error)

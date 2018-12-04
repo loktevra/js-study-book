@@ -1,4 +1,4 @@
-import Seneca from 'seneca';
+import * as Seneca from 'seneca';
 
 export const seneca = Seneca();
 

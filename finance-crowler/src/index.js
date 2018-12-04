@@ -10,7 +10,7 @@ seneca
   .use(iso4217)
   .use(alfaCapital)
   .use(main)
-  .act({role: 'alfaCapital', cmd: 'getPifGraph', pifAlias: 'opif_aks' }, (err, msg) => {
+  .act({role: 'alfaCapital', cmd: 'getProductsInfo', pifAlias: 'opif_aks' }, (err, msg) => {
     console.log('seneca', err, msg);
   })
   .act({role: 'main', cmd: 'start'}, (err) => {

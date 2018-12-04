@@ -1,20 +1,22 @@
 import axios from 'axios';
 import * as parse from 'csv-parse/lib/sync';
+import {getRepository} from "typeorm";
 
 import { act } from '../../../libs/senecaPromis';
 
 import PifGraphPointEntity from '../entity/PifGraphPointEntity';
 import alfaCapitalUrls from '../utils/alfaCapitalUrls';
 import { IRespondCreator } from '../interfaces';
-import { Connection } from 'typeorm';
 
 interface IGetPifGraphMsg {
   pifAlias: string;
+  minDate: Date;
+  maxDate: Date;
 }
 
-export default ({ getConnection }: IRespondCreator) => async function getPifGraph({ pifAlias }: IGetPifGraphMsg, done) {
-  const connection = getConnection()
-  const graph = await connection.manager.find(PifGraphPointEntity);
+export default ({ getConnection }: IRespondCreator) => async function getPifGraph({ pifAlias, minDate, maxDate  }: IGetPifGraphMsg, done) {
+  const repository = getRepository(PifGraphPointEntity);
+  const graph = await repository.find({});
   
   const response = await axios.get(alfaCapitalUrls.getGraphDataUrl({ pifAlias }));
   const data = parse(response.data, {
