@@ -31,7 +31,7 @@ function alfaCapital() {
       done();
     })
   
-    this.add({role: 'alfaCapital', cmd: 'getPifGraph'}, getPifGraph({ getConnection }))
+    this.add({role: 'alfaCapital', cmd: 'getPifGraph'}, getPifGraph)
     this.add({role: 'alfaCapital', cmd: 'getProductsInfo'}, getProductsList)
     
   } catch (error) {
