@@ -21,6 +21,7 @@ function needLoad(graph: PifGraphPointEntity[]) {
 }
 
 interface IGetPifGraphMsg {
+  productId: number;
   pifAlias: string;
   minDate: Date;
   maxDate: Date;
@@ -32,13 +33,16 @@ export default async function getPifGraph({ args }: any, done) {
   }
 
   const {
-    pifAlias
+    pifAlias,
+    productId,
+    minDate,
+    maxDate,
   } = args.query as IGetPifGraphMsg;
   console.log('getPifGraph', pifAlias);
   
   const repository = getRepository(PifGraphPointEntity);
   const products = await act<ProductsEntity[]>({role: 'alfaCapital', cmd: 'getProductsInfo'});
-  const product = products.find(({ alias }) => alias === pifAlias);
+  const product = products.find(({ alias, id }) => pifAlias ? alias === pifAlias : id === productId);
   if (product) {
     const graph = await repository.find({ aliasId: product.id });
     if (needLoad(graph)) {

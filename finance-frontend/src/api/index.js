@@ -14,7 +14,7 @@ async function getProducts() {
 }
 
 async function getGraph({ productId, minDate, maxDate}) {
-  const response = await createGetRequest(`/alfa-capital/graph?id=${productId}&minDate=${minDate}&maxDate=${maxDate}`);
+  const response = await createGetRequest(`/alfa-capital/graph?productId=${productId}&minDate=${minDate}&maxDate=${maxDate}`);
   return response;
 }
 

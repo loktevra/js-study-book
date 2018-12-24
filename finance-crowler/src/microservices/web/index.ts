@@ -8,7 +8,7 @@ const Routes = [{
   map: {
     getPifGraph: {
       GET: true,
-      name: '/pif-graph'
+      name: '/graph'
     },
     getProductsInfo: {
       GET: true,

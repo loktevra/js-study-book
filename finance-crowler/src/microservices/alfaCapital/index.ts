@@ -4,20 +4,10 @@ import getProductsList from './actions/getProductsList';
 import PifGraphPointEntity from './entity/PifGraphPointEntity';
 import ProductsEntity from './entity/ProductsEntity';
 
-let connection;
-
-function setConnection(connec) {
-  connection = connec;
-}
-
-function getConnection() {
-  return connection
-}
-
 function alfaCapital() {
   try {
     this.add({ init: 'alfaCapital' }, async (msg, done) => {
-      const connection = await createConnection({
+      await createConnection({
         type: "sqlite",
         database:  `${process.env.HOME}/data/AlfaCapital.db`,
         entities: [
@@ -27,7 +17,6 @@ function alfaCapital() {
         synchronize: true,
         logging: false
       })
-      setConnection(connection)
       done();
     })
   
