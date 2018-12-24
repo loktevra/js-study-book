@@ -26,7 +26,16 @@ interface IGetPifGraphMsg {
   maxDate: Date;
 }
 
-export default async function getPifGraph({ pifAlias, minDate, maxDate  }: IGetPifGraphMsg, done) {
+export default async function getPifGraph({ args }: any, done) {
+  if (!args || !args.query) {
+    return done({ satus: 'error', errors: [{ message: 'Должны быть указаны аргументы'}]})
+  }
+
+  const {
+    pifAlias
+  } = args.query as IGetPifGraphMsg;
+  console.log('getPifGraph', pifAlias);
+  
   const repository = getRepository(PifGraphPointEntity);
   const products = await act<ProductsEntity[]>({role: 'alfaCapital', cmd: 'getProductsInfo'});
   const product = products.find(({ alias }) => alias === pifAlias);
