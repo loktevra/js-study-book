@@ -35,18 +35,17 @@ export default async function getPifGraph({ args }: any, done) {
   const {
     pifAlias,
     productId,
-    minDate,
-    maxDate,
+    minDate = -Infinity,
+    maxDate = Infinity,
   } = args.query as IGetPifGraphMsg;
-  console.log('getPifGraph', pifAlias);
   
   const repository = getRepository(PifGraphPointEntity);
   const products = await act<ProductsEntity[]>({role: 'alfaCapital', cmd: 'getProductsInfo'});
-  const product = products.find(({ alias, id }) => pifAlias ? alias === pifAlias : id === productId);
+  const product = products.find(({ alias, id }) => pifAlias ? alias === pifAlias : id == productId);
   if (product) {
     const graph = await repository.find({ aliasId: product.id });
     if (needLoad(graph)) {
-      const response = await axios.get<string>(alfaCapitalUrls.getGraphDataUrl({ pifAlias })).then(r => r.data);
+      const response = await axios.get<string>(alfaCapitalUrls.getGraphDataUrl({ pifAlias: product.alias })).then(r => r.data);
       const allGraph = parse(response, {
         columns: true,
         delimiter: ';',
@@ -69,7 +68,12 @@ export default async function getPifGraph({ args }: any, done) {
         }
     });
     }
-    return done(null, await repository.find({ aliasId: product.id }))
+    const resultList =  await repository
+      .createQueryBuilder()
+      .where("aliasId = :aliasId", { aliasId: product.id })
+      .andWhere('date BETWEEN :minDate AND :maxDate', { minDate, maxDate})
+      .getMany();
+    return done(null, resultList);
   }
   return done({ satus: 'error', errors: [{ message: 'product not found'}]})
 }
