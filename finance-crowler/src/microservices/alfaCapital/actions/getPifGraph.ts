@@ -20,6 +20,11 @@ function needLoad(graph: PifGraphPointEntity[]) {
   return true;
 }
 
+interface IActionResponse<P> {
+  status: 'success' | 'fail';
+  data: P;
+}
+
 interface IGetPifGraphMsg {
   productId: number;
   pifAlias: string;
@@ -40,8 +45,8 @@ export default async function getPifGraph({ args }: any, done) {
   } = args.query as IGetPifGraphMsg;
   
   const repository = getRepository(PifGraphPointEntity);
-  const products = await act<ProductsEntity[]>({role: 'alfaCapital', cmd: 'getProductsInfo'});
-  const product = products.find(({ alias, id }) => pifAlias ? alias === pifAlias : id == productId);
+  const { data } = await act<IActionResponse<ProductsEntity[]>>({role: 'alfaCapital', cmd: 'getProductsInfo'});
+  const product = data.find(({ alias, id }) => pifAlias ? alias === pifAlias : id == productId);
   if (product) {
     const graph = await repository.find({ aliasId: product.id });
     if (needLoad(graph)) {
@@ -71,9 +76,9 @@ export default async function getPifGraph({ args }: any, done) {
     const resultList =  await repository
       .createQueryBuilder()
       .where("aliasId = :aliasId", { aliasId: product.id })
-      .andWhere('date BETWEEN :minDate AND :maxDate', { minDate, maxDate})
+      .andWhere('date BETWEEN :minDate AND :maxDate', { minDate: +new Date(minDate), maxDate: +new Date(maxDate) })
       .getMany();
-    return done(null, resultList);
+    return done(null, { data: resultList, status: 'success' });
   }
   return done({ satus: 'error', errors: [{ message: 'product not found'}]})
 }

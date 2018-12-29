@@ -1,7 +1,7 @@
 import { getISODate } from '../utils';
 
 async function createGetRequest(path) {
-  const url = new URL(path, 'https://localhost:8000');
+  const url = new URL(path, 'http://localhost:4000');
   const request = new Request(url)
   const response = await fetch(request);
   const data = await response.json();
@@ -9,7 +9,7 @@ async function createGetRequest(path) {
 }
 
 async function getProducts() {
-  const response = await createGetRequest('/alfa-capital/products-info?only_actual_pifs=true');
+  const response = await createGetRequest('/alfa-capital/products-info?onlyActualPifs=true');
   return response;
 }
 

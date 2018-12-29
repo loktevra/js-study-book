@@ -19,10 +19,17 @@ const Routes = [{
 
 function webInit() {
   try {
+    const expressApp = Express();
+    expressApp.use(function(req, res, next) {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      next();
+    })
     this.use(SenecaWeb, {
       routes: Routes,
       adapter: senecaWebAdapter,
-      context: Express(),
+      context: expressApp,
     });
   } catch (error) {
     console.error('error in webInit', error)
