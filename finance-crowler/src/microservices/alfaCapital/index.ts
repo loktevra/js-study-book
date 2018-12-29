@@ -22,6 +22,22 @@ function alfaCapital() {
   
     this.add({role: 'alfaCapital', cmd: 'getPifGraph'}, getPifGraph)
     this.add({role: 'alfaCapital', cmd: 'getProductsInfo'}, getProductsList)
+    this.act('role:web', {
+      routes: [{
+        pin: 'role:alfaCapital,cmd:*',
+        prefix: '/alfa-capital',
+        map: {
+          getPifGraph: {
+            GET: true,
+            name: '/graph'
+          },
+          getProductsInfo: {
+            GET: true,
+            name: '/products-info'
+          },
+        }
+      }]
+    })
     
   } catch (error) {
     console.log(error)

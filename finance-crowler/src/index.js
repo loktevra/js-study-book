@@ -5,13 +5,6 @@ import iso4217 from './microservices/iso4217';
 import web from './microservices/web';
 
 seneca.client()
+  .use(web)
   .use(iso4217)
   .use(alfaCapital)
-  .use(web)
-  .ready(() => {
-    const server = seneca.export('web/context')()
-
-    server.listen('4000', () => {
-      console.log('server started on: 4000')
-    })
-  })
