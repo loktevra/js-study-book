@@ -1,2 +1,0 @@
-require('./alfaCapital');
-require('./ui');
