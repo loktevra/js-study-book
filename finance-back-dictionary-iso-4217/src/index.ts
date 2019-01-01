@@ -1,14 +1,18 @@
-import * as Seneca from 'seneca';
+import { connect, Payload } from 'ts-nats';
 
-import iso4217 from './iso4217';
+async function main() {
+  try {
+    const nc = await connect({ servers: ['nats://0.0.0.0:4222'], payload: Payload.JSON});
+    await nc.subscribe('dictionary/iso4217/getCurrencyList', (err, msg) => {
+      if(err) {   
+        console.error(err);
+      } else if (msg.reply) {
+        nc.publish(msg.reply, `hello there ${msg.data}`); 
+      }
+  });
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-Seneca()
-  .client({
-    port: 9001,
-    pin: 'role:web',
-  })
-  .use(iso4217)
-  .listen({
-    port: 9003,
-    pin: 'role:iso-4217',
-  })
+main();

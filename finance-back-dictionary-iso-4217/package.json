@@ -17,11 +17,10 @@
   },
   "homepage": "https://github.com/loktevra/js-study-book#readme",
   "dependencies": {
-    "seneca": "^3.7.0"
+    "ts-nats": "^1.0.4"
   },
   "devDependencies": {
     "@types/node": "^10.12.18",
-    "@types/seneca": "^2.1.9",
     "ts-node": "^7.0.1",
     "typescript": "^3.2.1"
   }
