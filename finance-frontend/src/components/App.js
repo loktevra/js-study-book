@@ -22,6 +22,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
+    API.getCurrencyList().then(console.log)
     API.getProducts().then(response => {      
       this.setState({
         products: response.data,

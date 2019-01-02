@@ -1,20 +1,8 @@
-function iso4217() {
-  this.add({role: 'iso-4217', cmd: 'getCurrencyList'}, function (msg, done) {
-    const list = ['foo', 'bar']
-    done(null, { data: list, status: 'success' })
-  })
-  this.act('role:web', {
-    routes: [{
-      pin: 'role:iso-4217,cmd:*',
-      prefix: '/dictionary',
-      map: {
-        getCurrencyList: {
-          GET: true,
-          name: '/currency-list'
-        },
-      }
-    }]
-  }, console.log)
+function getCurrencyList(nc) {
+  return (data, reply) => {
+    const list = ['foo', 'bar'];
+    nc.publish(reply, { result: { model: { message: JSON.stringify(list) } }})
+  }
 }
 
-export default iso4217
+export default getCurrencyList

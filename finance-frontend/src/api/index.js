@@ -1,4 +1,6 @@
-import { getISODate } from '../utils';
+import ResClient from 'resclient';
+
+const client = new ResClient('ws://0.0.0.0:8080/');
 
 async function createGetRequest(path) {
   const url = new URL(path, 'http://localhost:4000');
@@ -18,8 +20,15 @@ async function getGraph({ productId, minDate, maxDate}) {
   return response;
 }
 
+async function getCurrencyList() {
+  const model = await client.get('dictionary.iso4217.currencyList');
+
+  return model.message;
+}
+
 
 export {
   getProducts,
   getGraph,
+  getCurrencyList,
 }

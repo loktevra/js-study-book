@@ -29,6 +29,7 @@
     "lodash": "^4.17.11",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-google-charts": "^3.0.10"
+    "react-google-charts": "^3.0.10",
+    "resclient": "^2.0.2"
   }
 }
