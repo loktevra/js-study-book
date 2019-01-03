@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/loktevra/js-study-book#readme",
   "dependencies": {
-    "ts-nats": "^1.0.4"
+    "axios": "^0.18.0",
+    "lodash": "^4.17.11",
+    "ts-nats": "^1.0.4",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "@types/node": "^10.12.18",

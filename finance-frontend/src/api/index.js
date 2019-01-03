@@ -21,9 +21,12 @@ async function getGraph({ productId, minDate, maxDate}) {
 }
 
 async function getCurrencyList() {
-  const model = await client.get('dictionary.iso4217.currencyList');
+  return await client.get('dictionary.iso4217.currencyList').then(r => JSON.parse(r.message));
+}
 
-  return model.message;
+
+async function getDenominationHistory() {
+  return await client.get('dictionary.iso4217.denominationHistory').then(r => JSON.parse(r.message));
 }
 
 
@@ -31,4 +34,5 @@ export {
   getProducts,
   getGraph,
   getCurrencyList,
+  getDenominationHistory,
 }
