@@ -22,6 +22,7 @@
     "lodash": "^4.17.11",
     "seneca": "^3.7.0",
     "sqlite3": "^4.0.4",
+    "ts-nats": "^1.0.4",
     "typeorm": "^0.2.9"
   },
   "devDependencies": {

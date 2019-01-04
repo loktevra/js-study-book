@@ -2,22 +2,12 @@ import ResClient from 'resclient';
 
 const client = new ResClient('ws://0.0.0.0:8080/');
 
-async function createGetRequest(path) {
-  const url = new URL(path, 'http://localhost:4000');
-  const request = new Request(url)
-  const response = await fetch(request);
-  const data = await response.json();
-  return data;
-}
-
 async function getProducts() {
-  const response = await createGetRequest('/alfa-capital/products-info?onlyActualPifs=true');
-  return response;
+  return await client.call('alfaCapital.productsInfo', 'get', { onlyActualPifs: true }).then(r => JSON.parse(r.model.message));
 }
 
 async function getGraph({ productId, minDate, maxDate}) {
-  const response = await createGetRequest(`/alfa-capital/graph?productId=${productId}&minDate=${minDate}&maxDate=${maxDate}`);
-  return response;
+  return await client.call('alfaCapital.pifGraph', 'get', { productId, minDate, maxDate}).then(r => JSON.parse(r.model.message));
 }
 
 async function getCurrencyList() {
