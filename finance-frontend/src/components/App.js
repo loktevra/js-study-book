@@ -22,6 +22,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
+    API.getDailyForeignCurrencyMarket().then(console.log);
     API.getCurrencyList().then(console.log);
     API.getDenominationHistory().then(console.log);
     API.getProducts().then(response => {      

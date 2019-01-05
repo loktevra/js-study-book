@@ -1,5 +1,7 @@
 import { connect, Payload } from 'ts-nats';
 
+import { getDailyForeignCurrencyMarket } from './getDailyForeignCurrencyMarket';
+
 function callWrapper(callback) {
   return (err, msg) => {
     if (err) {
@@ -19,10 +21,9 @@ function accessResult(nc, result) {
 async function main() {
   try {
     const nc = await connect({ servers: ['nats://0.0.0.0:4222'], payload: Payload.JSON});
-    await nc.subscribe('access.mcs.model', accessResult(nc, { get: true, call: 'get' }));
-    await nc.subscribe('call.mcs.model.get', callWrapper((data, reply) => {
-      nc.publish(reply, 'Hello, world!'); 
-    }));
+    console.log('backend cbr start');
+    await nc.subscribe('access.cbr.dailyForeignCurrencyMarket', accessResult(nc, { get: true }));
+    await nc.subscribe('get.cbr.dailyForeignCurrencyMarket', callWrapper(getDailyForeignCurrencyMarket(nc)));
   } catch (error) {
     console.error(error);
   }

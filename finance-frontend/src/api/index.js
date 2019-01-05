@@ -10,6 +10,10 @@ async function getGraph({ productId, minDate, maxDate}) {
   return await client.call('alfaCapital.pifGraph', 'get', { productId, minDate, maxDate}).then(r => JSON.parse(r.model.message));
 }
 
+async function getDailyForeignCurrencyMarket() {
+  return await client.get('cbr.dailyForeignCurrencyMarket').then(r => JSON.parse(r.message));
+}
+
 async function getCurrencyList() {
   return await client.get('dictionary.iso4217.currencyList').then(r => JSON.parse(r.message));
 }
@@ -23,6 +27,7 @@ async function getDenominationHistory() {
 export {
   getProducts,
   getGraph,
+  getDailyForeignCurrencyMarket,
   getCurrencyList,
   getDenominationHistory,
 }
